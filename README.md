@@ -1,4 +1,4 @@
-<h2> Steven Sturgeons's Portfolio </h2>
+<h2> Steven Sturgeon's Portfolio </h2>
 
 ## Welcome! 👋
 
