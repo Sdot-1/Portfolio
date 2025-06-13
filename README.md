@@ -6,7 +6,7 @@ Welcome to my GitHub portfolio! Here you'll discover a showcase of my passion fo
 
 ## About Me 
 
-I am Steven Sturgeon, a highly motivated and results-driven individual with a Bachelor's degree in Information Systems, specializing in Cybersecurity . With a strong foundation in technology and a keen interest in cybersecurity, I am constantly exploring new challenges and seeking opportunities to expand my knowledge and expertise.
+I am Steven Sturgeon, a highly motivated and results-driven individual with a Bachelor's degree in Information Systems, specializing in Cybersecurity. With a strong foundation in technology and a keen interest in cybersecurity, I am constantly exploring new challenges and seeking opportunities to expand my knowledge and expertise.
 
 ## Certifications 🎓
 
