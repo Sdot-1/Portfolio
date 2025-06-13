@@ -1,41 +1,8 @@
-
-
-
-
-
-
-
-
-
-
-
-
 Information Security Policy: ABC Medical Company
 
 Steven Sturgeon
 
 SEC 4303-18.02.01-5B25-S1: IS Security Policy Analysis
-
-Professor Krahenbill
-
-5/27/2025
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -304,27 +271,11 @@ U.S. Department of Health & Human Services. (2023). Health Insurance Portability
 
 ### 7.4 Document Control
 
-
-
-
-
-
-
-
+![image](https://github.com/user-attachments/assets/8809e720-f2aa-494d-843f-d788c63099b9)
 
 ## Appendix A: Control Mapping Matrix
-
-
-
-
-
-
-
-
-
-
-
-
+![image](https://github.com/user-attachments/assets/1025287a-0a78-4010-8fb5-74f8d8e36022)
+![image](https://github.com/user-attachments/assets/5fec844b-e1b8-4746-acc7-7611d18c4a97)
 
 ## Appendix B: Definitions and Glossary
 
@@ -373,10 +324,12 @@ VPN (Virtual Private Network) — A secure tunnel that encrypts data as it trave
 
 
 ## Appendix C: Roles and Responsibilities Matrix
+![image](https://github.com/user-attachments/assets/8febbf2c-0fe9-498a-b0d3-1b57395e0081)
 
 
 
 
 
 ## Appendix D: HIPAA Security Rule Crosswalk
+![image](https://github.com/user-attachments/assets/5b825ebd-37fe-4ab3-980f-923cf0eb5f6b)
 
