@@ -36,3 +36,4 @@ From the root of your Portfolio repo (or wherever this is cloned):
 ```bash
 python projects/automated-windows-compliance-checker/run_checker.py
 
+🔍 Note: If password complexity is not set in the local registry, but appears as enabled in the GUI, it may be enforced by domain or Microsoft account policy.
