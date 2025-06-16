@@ -35,5 +35,6 @@ From the root of your Portfolio repo (or wherever this is cloned):
 
 ```bash
 python projects/automated-windows-compliance-checker/run_checker.py
-```bash
-Output reports are saved locally in the results/ folder and are not tracked in version control.
+```
+
+Output reports are saved locally in the 'results/' folder and are not tracked in version control.
