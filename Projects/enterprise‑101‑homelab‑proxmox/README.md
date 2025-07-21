@@ -16,61 +16,6 @@ This repo documents a complete **Proxmox VE** adaptation.  All steps match the 
 
 ## 2  Lab Topology
 
-%% ----------------------------------------------------
-%% Enterprise‑101 lab topology (Proxmox edition)
-%% ----------------------------------------------------
-flowchart TD
-    %% --- Theme colours (optional) -------------------
-    classDef srv fill:#f4edff,stroke:#bb6fff,stroke-width:2px,color:#6b28b6;
-    classDef node fill:#ffffff,stroke:#bb6fff,stroke-width:2px,color:#6b28b6;
-    classDef label fill:#bb6fff,color:#ffffff,stroke:#bb6fff,stroke-width:0px;
-
-    %% --- Core infrastructure ------------------------
-    DIR[["<b>Directory<br/>Services&nbsp;Server</b>"]]:::srv
-    HYP["<b>Hypervisor</b>"]:::label
-    HYPcore[( )]:::srv  %% empty circle to centre links
-
-    %% --- Security servers ---------------------------
-    SEC_L[["<b>Security&nbsp;Server</b>"]]:::srv
-    SEC_R[["<b>Security&nbsp;Server</b>"]]:::srv
-
-    %% --- Peripheral services ------------------------
-    EMAIL[["Email&nbsp;Server"]]:::node
-    SIEM[["SIEM"]]:::node
-    EDR[["EDR"]]:::node
-    VULN[["VulnScan"]]:::node
-
-    %% --- Workstations -------------------------------
-    WS1[["Enterprise&nbsp;Workstation"]]:::node
-    WS2[["Enterprise&nbsp;Workstation"]]:::node
-    SWS[["Security&nbsp;Workstation"]]:::node
-
-    %% === Connections ================================
-    DIR --- HYPcore
-    HYPcore --- HYP
-
-    %% Left branch
-    EMAIL --- SEC_L
-    SEC_L --- HYPcore
-
-    %% Right branch
-    HYPcore --- SEC_R
-    SEC_R --- SIEM
-    SEC_R --- EDR
-    SEC_R --- VULN
-
-    %% Downward branch to VDI / user devices
-    HYPcore --- WS1
-    HYPcore --- WS2
-    HYPcore --- SWS
-
-    %% --- Styling tweaks to mimic the screenshot -----
-    %% Square servers vs. rounded PCs
-    class DIR,SEC_L,SEC_R srv;
-    class EMAIL,SIEM,EDR,VULN,WS1,WS2,SWS node;
-
-
-
 | Hostname (prefix `project-x-`) | OS / Role                              | vCPU | RAM | Disk | IP            |
 |--------------------------------|----------------------------------------|------|-----|------|---------------|
 | `dc` (`corp.project-x-dc.com`) | **Windows Server 2025** – AD/DNS/DHCP  | 2    | 4 GB| 50 GB| 10.0.0.5      |
@@ -93,15 +38,35 @@ flowchart TD
 
 ---
 
-## 4  Host Preparation
+## 🧠 Lessons Learned
 
-```bash
-# Proxmox network file: /etc/network/interfaces
-auto vmbr1
-iface vmbr1 inet static
-    address 10.0.0.1/24
-    bridge_ports none
-    bridge_stp off
-    bridge_fd 0
-    post-up   iptables -t nat -A POSTROUTING -s 10.0.0.0/24 ! -d 10.0.0.0/24 -j MASQUERADE
-    post-down iptables -t nat -D POSTROUTING -s 10.0.0.0/24 ! -d 10.0.0.0/24 -j MASQUERADE
+- **ARM-based Macs have compatibility limitations**  
+  Tools like Windows Server and Security Onion don't support ARM natively, making them unsuitable for full-stack x86-based cybersecurity labs.
+
+- **Old hardware still has value**  
+  Repurposing an older laptop (e.g., a ThinkPad T450) as a bare-metal Proxmox server is an effective workaround for running x86 VMs.
+
+- **Proxmox enables flexible network segmentation**  
+  By configuring virtual bridges (e.g., `vmbr0`, `vmbr1`, `vmbr2`), you can separate lab environments, isolate honeypots, and manage internal vs. external access cleanly.
+
+- **Windows 10 supports SSH between local users**  
+  With the OpenSSH Server enabled and proper firewall settings, you can SSH into a separate user account or even simulate a client-server interaction locally.
+
+- **Consumer-grade routers (e.g., Verizon Fios) limit segmentation**  
+  Native VLAN or firewall isolation isn't feasible on most ISP-provided hardware, so adding a secondary router or VLAN-capable switch is often necessary for true lab isolation.
+
+- **You can isolate traffic while maintaining selective internet access**  
+  Using Proxmox’s networking options and careful VM gateway/DNS configuration, you can allow or block internet traffic per VM — ideal for safely running honeypots or simulated attacks.
+
+* **Avoid pointing MASQUERADE to a physical iface**; always use the bridge device (vmbr0)
+* tcpdump is extremely useful to isolate where packets drop
+* iptables -t nat -L -n -v and ip route give the clearest picture for NAT and routing flow
+* Clock/time issues were unrelated, but caused confusion during diagnosis
+
+Lessons Learned – Wazuh ⚙️ Docker Setup
+- **Docker Engine + Compose v2** are required.  
+  - Modern syntax is `docker compose …`; legacy `docker-compose` needs the separate binary.
+- Ensure `vm.max_map_count=262144` on the host *before* launching the stack:
+  ```bash
+  sudo sysctl -w vm.max_map_count=262144
+  echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
