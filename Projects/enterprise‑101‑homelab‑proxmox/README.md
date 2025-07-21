@@ -16,4 +16,63 @@ This repo documents a complete **Proxmox VE** adaptation.  All steps match the 
 
 ## 2  Lab Topology
 
+┌──────────────────────────────┐
+│ 10.0.0.0/24 (vmbr1, NAT) │
+│ │
+│ ┌────────────┐ RDP / SMB │
+│ │ Win‑Client │──────────────┐│
+│ └────────────┘ ││
+│ ┌────────────┐ SSH / Git ││
+│ │ Linux‑Dev │──────────────┤│
+│ └────────────┘ ││
+│ ┌────────────┐ Syslog ││
+│ │ Sec‑Box │──────────────┤│
+│ └────────────┘ ││
+│ ┌────────────┐ LDAP / DNS ││
+│ │ AD Server │──────────────┤│
+│ └────────────┘ ││
+│ ┌────────────┐ ││
+│ │ Sec‑Work │<─────────────┘│
+│ └────────────┘ │
+│ ▲ │
+│ │ (dual‑homed) │
+│ ┌────────────┐ │
+│ │ Kali │ (attacker) │
+│ └────────────┘ │
+└─────────────────────────────────┘
 
+
+| Hostname (prefix `project-x-`) | OS / Role                              | vCPU | RAM | Disk | IP            |
+|--------------------------------|----------------------------------------|------|-----|------|---------------|
+| `dc` (`corp.project-x-dc.com`) | **Windows Server 2025** – AD/DNS/DHCP  | 2    | 4 GB| 50 GB| 10.0.0.5      |
+| `win-client`                   | **Windows 11 Enterprise** – workstation| 2    | 4 GB| 80 GB| 10.0.0.100    |
+| `linux-client`                 | **Ubuntu 22.04 Desktop** – dev box     | 1    | 2 GB| 80 GB| 10.0.0.101    |
+| `sec-box`                      | **Ubuntu 22.04** – Wazuh manager GUI   | 2    | 4 GB| 80 GB| 10.0.0.10     |
+| `sec-work`                     | **Security Onion** – analyst console   | 1    | 2 GB| 55 GB| 10.0.0.103    |
+| `corp-svr`                     | **Ubuntu 22.04 Server** – MailHog      | 1    | 2 GB| 25 GB| 10.0.0.8      |
+| `attacker`                     | **Kali Linux 2024.4**                  | 1    | 2 GB| 55 GB| DHCP (dynamic)|
+
+---
+
+## 3  Why Proxmox?
+
+* **Type‑1 performance** – KVM/QEMU sits on the host kernel.  
+* **Snapshots & backups** – ZFS thin‑clones, scheduled `vzdump`.  
+* **Built‑in NAT** – A single `vmbr1` bridge with masquerade rules replaces the desktop‑hypervisor NAT network.  
+* **Automation** – REST API, Terraform, and Ansible support.  
+* **Free & on‑prem** – No per‑VM licensing headaches.
+
+---
+
+## 4  Host Preparation
+
+```bash
+# Proxmox network file: /etc/network/interfaces
+auto vmbr1
+iface vmbr1 inet static
+    address 10.0.0.1/24
+    bridge_ports none
+    bridge_stp off
+    bridge_fd 0
+    post-up   iptables -t nat -A POSTROUTING -s 10.0.0.0/24 ! -d 10.0.0.0/24 -j MASQUERADE
+    post-down iptables -t nat -D POSTROUTING -s 10.0.0.0/24 ! -d 10.0.0.0/24 -j MASQUERADE
