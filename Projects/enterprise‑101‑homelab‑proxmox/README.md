@@ -16,21 +16,58 @@ This repo documents a complete **Proxmox VE** adaptation.  All steps match the 
 
 ## 2  Lab Topology
 
-flowchart TB
-    subgraph vmbr1["10.0.0.0/24 (vmbr1 – NAT)"]
-        WIN[Win‑Client<br/>(RDP / SMB)]
-        LNX[Linux‑Dev<br/>(SSH / Git)]
-        SBX[Sec‑Box<br/>(Syslog)]
-        DC[AD Server<br/>(LDAP / DNS)]
-        SOW[Sec‑Work]
-    end
+%% ----------------------------------------------------
+%% Enterprise‑101 lab topology (Proxmox edition)
+%% ----------------------------------------------------
+flowchart TD
+    %% --- Theme colours (optional) -------------------
+    classDef srv fill:#f4edff,stroke:#bb6fff,stroke-width:2px,color:#6b28b6;
+    classDef node fill:#ffffff,stroke:#bb6fff,stroke-width:2px,color:#6b28b6;
+    classDef label fill:#bb6fff,color:#ffffff,stroke:#bb6fff,stroke-width:0px;
 
-    ATT[Kali<br/>(attacker)]
+    %% --- Core infrastructure ------------------------
+    DIR[["<b>Directory<br/>Services&nbsp;Server</b>"]]:::srv
+    HYP["<b>Hypervisor</b>"]:::label
+    HYPcore[( )]:::srv  %% empty circle to centre links
 
-    WIN --> DC
-    LNX --> DC
-    SBX --> DC
-    SOW <-->|dual‑homed| ATT
+    %% --- Security servers ---------------------------
+    SEC_L[["<b>Security&nbsp;Server</b>"]]:::srv
+    SEC_R[["<b>Security&nbsp;Server</b>"]]:::srv
+
+    %% --- Peripheral services ------------------------
+    EMAIL[["Email&nbsp;Server"]]:::node
+    SIEM[["SIEM"]]:::node
+    EDR[["EDR"]]:::node
+    VULN[["VulnScan"]]:::node
+
+    %% --- Workstations -------------------------------
+    WS1[["Enterprise&nbsp;Workstation"]]:::node
+    WS2[["Enterprise&nbsp;Workstation"]]:::node
+    SWS[["Security&nbsp;Workstation"]]:::node
+
+    %% === Connections ================================
+    DIR --- HYPcore
+    HYPcore --- HYP
+
+    %% Left branch
+    EMAIL --- SEC_L
+    SEC_L --- HYPcore
+
+    %% Right branch
+    HYPcore --- SEC_R
+    SEC_R --- SIEM
+    SEC_R --- EDR
+    SEC_R --- VULN
+
+    %% Downward branch to VDI / user devices
+    HYPcore --- WS1
+    HYPcore --- WS2
+    HYPcore --- SWS
+
+    %% --- Styling tweaks to mimic the screenshot -----
+    %% Square servers vs. rounded PCs
+    class DIR,SEC_L,SEC_R srv;
+    class EMAIL,SIEM,EDR,VULN,WS1,WS2,SWS node;
 
 
 
@@ -40,9 +77,9 @@ flowchart TB
 | `win-client`                   | **Windows 11 Enterprise** – workstation| 2    | 4 GB| 80 GB| 10.0.0.100    |
 | `linux-client`                 | **Ubuntu 22.04 Desktop** – dev box     | 1    | 2 GB| 80 GB| 10.0.0.101    |
 | `sec-box`                      | **Ubuntu 22.04** – Wazuh manager GUI   | 2    | 4 GB| 80 GB| 10.0.0.10     |
-| `sec-work`                     | **Security Onion** – analyst console   | 1    | 2 GB| 55 GB| 10.0.0.103    |
-| `corp-svr`                     | **Ubuntu 22.04 Server** – MailHog      | 1    | 2 GB| 25 GB| 10.0.0.8      |
-| `attacker`                     | **Kali Linux 2024.4**                  | 1    | 2 GB| 55 GB| DHCP (dynamic)|
+| `sec-work`                     | **Security Onion** – analyst console   | 2    | 4 GB|100 GB| 10.0.0.103    |
+| `corp-svr`                     | **Ubuntu 22.04 Server** – MailHog      | 1    | 4 GB| 80 GB| 10.0.0.8      |
+| `attacker`                     | **Kali Linux 2024.4**                  | 2    | 4 GB| 55 GB| DHCP (dynamic)|
 
 ---
 
