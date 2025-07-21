@@ -16,30 +16,22 @@ This repo documents a complete **Proxmox VE** adaptation.  All steps match the 
 
 ## 2  Lab Topology
 
-┌──────────────────────────────┐
-│ 10.0.0.0/24 (vmbr1, NAT) │
-│ │
-│ ┌────────────┐ RDP / SMB │
-│ │ Win‑Client │──────────────┐│
-│ └────────────┘ ││
-│ ┌────────────┐ SSH / Git ││
-│ │ Linux‑Dev │──────────────┤│
-│ └────────────┘ ││
-│ ┌────────────┐ Syslog ││
-│ │ Sec‑Box │──────────────┤│
-│ └────────────┘ ││
-│ ┌────────────┐ LDAP / DNS ││
-│ │ AD Server │──────────────┤│
-│ └────────────┘ ││
-│ ┌────────────┐ ││
-│ │ Sec‑Work │<─────────────┘│
-│ └────────────┘ │
-│ ▲ │
-│ │ (dual‑homed) │
-│ ┌────────────┐ │
-│ │ Kali │ (attacker) │
-│ └────────────┘ │
-└─────────────────────────────────┘
+flowchart TB
+    subgraph vmbr1["10.0.0.0/24 (vmbr1 – NAT)"]
+        WIN[Win‑Client<br/>(RDP / SMB)]
+        LNX[Linux‑Dev<br/>(SSH / Git)]
+        SBX[Sec‑Box<br/>(Syslog)]
+        DC[AD Server<br/>(LDAP / DNS)]
+        SOW[Sec‑Work]
+    end
+
+    ATT[Kali<br/>(attacker)]
+
+    WIN --> DC
+    LNX --> DC
+    SBX --> DC
+    SOW <-->|dual‑homed| ATT
+
 
 
 | Hostname (prefix `project-x-`) | OS / Role                              | vCPU | RAM | Disk | IP            |
