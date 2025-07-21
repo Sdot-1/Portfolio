@@ -19,7 +19,7 @@ This repo documents a complete **Proxmox VE** adaptation.  All steps match the 
 | Hostname (prefix `project-x-`) | OS / Role                              | vCPU | RAM | Disk | IP            |
 |--------------------------------|----------------------------------------|------|-----|------|---------------|
 | `dc` (`corp.project-x-dc.com`) | **Windows Server 2025** – AD/DNS/DHCP  | 2    | 4 GB| 50 GB| 10.0.0.5      |
-| `win-client`                   | **Windows 11 Enterprise** – workstation| 2    | 4 GB| 80 GB| 10.0.0.100    |
+| `win-client`                   | **Windows 10 Enterprise** – workstation| 2    | 4 GB| 80 GB| 10.0.0.100    |
 | `linux-client`                 | **Ubuntu 22.04 Desktop** – dev box     | 1    | 2 GB| 80 GB| 10.0.0.101    |
 | `sec-box`                      | **Ubuntu 22.04** – Wazuh manager GUI   | 2    | 4 GB| 80 GB| 10.0.0.10     |
 | `sec-work`                     | **Security Onion** – analyst console   | 2    | 4 GB|100 GB| 10.0.0.103    |
