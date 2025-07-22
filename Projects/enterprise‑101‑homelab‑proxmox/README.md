@@ -1,4 +1,4 @@
-# Enterprise 101 Homelab on Proxmox VE  
+# Enterprise 101 Homelab on Proxmox VE  (IN PROGRESS 7/22/25)
 _Re‑implementing Project Security’s “From Initial Access to Breached” lab_
 
 > **Course reference:** <https://docs.projectsecurity.io/e101/overview/>  
