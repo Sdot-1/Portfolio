@@ -220,7 +220,7 @@ The course includes a short guide where you loosen certain defaults to create re
 
 If you want blue-team visibility:
 
-* Deploy **Wazuh Indexer + Server** (can be on `project-x-sec-box` or a dedicated VM) and install **Wazuh agents** on the Windows client, DC, and Linux client. The tool guide covers groups and onboarding custom logs. ([docs.projectsecurity.io][10])
+* Deploy **Wazuh Indexer + Server**  and install **Wazuh agents** on the Windows client, DC, and Linux client. The tool guide covers groups and onboarding custom logs.
 
 ---
 
@@ -259,8 +259,7 @@ Follow the doc’s end-to-end attack scenario to phish creds, gain initial acces
 
 ```
 
-Want me to drop this into a GitHub-friendly filename (e.g., `README.md`) and add a minimalist network diagram you can screenshot for the repo?
-::contentReference[oaicite:37]{index=37}
+
 ```
 
 [1]: https://docs.projectsecurity.io/e101/overview/ "Overview - Project Security"
