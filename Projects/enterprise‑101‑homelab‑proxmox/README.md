@@ -33,11 +33,14 @@ A step-by-step build of the **Project Security: Enterprise 101 – From Initial 
 
 ## What You’ll Build
 
-A contained NAT’d lab on **10.0.0.0/24** with an AD domain (`corp.project-x-dc.com`), one Windows client, a Linux desktop client, “security” hosts, a small “corporate” Ubuntu server (for lab services like MailHog), and a Kali attacker VM. The flow and exercises mirror the Enterprise 101 docs. :contentReference[oaicite:1]{index=1}
+A contained NAT’d lab on **10.0.0.0/24** with an AD domain (`corp.project-x-dc.com`), one Windows client, a Linux desktop client, “security” hosts, a small “corporate” Ubuntu server (for lab services like MailHog), and a Kali attacker VM. The flow and exercises mirror the Enterprise 101 docs.
 
 
 
 ## Host Plan & IPs
+
+<img width="2431" height="1496" alt="image" src="https://github.com/user-attachments/assets/e19606c3-7834-426d-86e2-7478d90d6b05" />
+
 
 **Network:** `10.0.0.0/24` (NAT)  
 **Gateway (lab bridge):** `10.0.0.1`
@@ -52,7 +55,7 @@ A contained NAT’d lab on **10.0.0.0/24** with an AD domain (`corp.project-x-dc
 | `-sec-work` | `sec-work` | `10.0.0.103` (or DHCP) | Security playground |
 | `attacker` | Kali | DHCP | Attacker box |
 
-> These hostnames, IPs, and the domain name come straight from the Enterprise 101 overview. :contentReference[oaicite:2]{index=2}
+> These hostnames, IPs, and the domain name come straight from the Enterprise 101 overview. 
 
 **Default accounts (lab):**  
 - `Administrator` on the DC → `@Deeboodah1!`  
@@ -60,7 +63,7 @@ A contained NAT’d lab on **10.0.0.0/24** with an AD domain (`corp.project-x-dc
 - Linux client user `janed` → `@password123!`  
 - Various “sec-*” and “project-x-admin” accounts → `@password123!`  
 - Attacker box: `attacker/attacker` (for the demo VM)  
-See the docs’ **Accounts & Passwords** table for the full list. :contentReference[oaicite:3]{index=3}
+See the docs’ **Accounts & Passwords** table for the full list. 
 
 ---
 
@@ -73,7 +76,7 @@ See the docs’ **Accounts & Passwords** table for the full list. :contentRefere
   - Ubuntu **22.04** Desktop & Server  
   - Security Onion (used later in other sections; optional for E101)  
   - Kali Linux  
-  Download links are listed in the Overview. The doc also offers a Sync.com bundle with the specific versions used. :contentReference[oaicite:4]{index=4}
+  Download links are listed in the Overview. The doc also offers a Sync.com bundle with the specific versions used. 
 
 ---
 
@@ -118,7 +121,7 @@ netfilter-persistent save
 
 ## Upload ISOs to Proxmox
 
-In the Proxmox UI: **Datacenter → your node → local (or a storage) → ISO Images → Upload**. Add the Windows, Ubuntu, Kali, and (optional) Security Onion ISOs listed above. ([docs.projectsecurity.io][1])
+In the Proxmox UI: **Datacenter → your node → local (or a storage) → ISO Images → Upload**. Add the Windows, Ubuntu, Kali, and Security Onion ISOs
 
 ---
 
@@ -136,7 +139,7 @@ Create each VM with these **minimum specs** (from the docs). Disk bus choices be
 | `project-x-corp-svr`     | Ubuntu Server 22.04   |      1 / 2 GB |      25 GB | MailHog target later                                                       |
 | `project-x-attacker`     | Kali Linux (2024.x)   |      1 / 2 GB |      55 GB |                                                                            |
 
-> Specs are from the Enterprise 101 Overview’s VM table. Attach all NICs to **`vmbr1`**. ([docs.projectsecurity.io][1])
+> Specs are from the Enterprise 101 Overview’s VM table. Attach all NICs to **`vmbr1`**. 
 
 **Proxmox create-VM quick recipe (GUI):**
 
@@ -157,9 +160,9 @@ Create each VM with these **minimum specs** (from the docs). Disk bus choices be
 2. **Static IP:**
 
    * IP: `10.0.0.5`, Mask: `255.255.255.0`, GW: `10.0.0.1`. ([docs.projectsecurity.io][3])
-3. **Add roles & promote to DC:** AD DS, DNS, DHCP, IIS/File Services (as per doc screenshots). Promote as **new forest** with root domain **`corp.project-x-dc.com`** (yes, that exact string). Leave NetBIOS as `CORP`. Reboot. ([docs.projectsecurity.io][3])
-4. **DNS forwarder:** In DNS Manager, set forwarder to `8.8.8.8` so the domain can still resolve internet names. Test with `ping google.com` and `nslookup corp.project-x-dc.com`. ([docs.projectsecurity.io][3])
-5. **DHCP scope:** Create IPv4 scope **`project-x-scope`**: `10.0.0.100`–`10.0.0.200`, mask `/24`, router **`10.0.0.1`**. Authorize DHCP. (We’ll often use static IPs per the docs, but DHCP is still handy.) ([docs.projectsecurity.io][3])
+3. **Add roles & promote to DC:** AD DS, DNS, DHCP, IIS/File Services. Promote as **new forest** with root domain **`corp.project-x-dc.com`** (yes, that exact string). Leave NetBIOS as `CORP`. Reboot. 
+4. **DNS forwarder:** In DNS Manager, set forwarder to `8.8.8.8` so the domain can still resolve internet names. Test with `ping google.com` and `nslookup corp.project-x-dc.com`.
+5. **DHCP scope:** Create IPv4 scope **`project-x-scope`**: `10.0.0.100`–`10.0.0.200`, mask `/24`, router **`10.0.0.1`**. Authorize DHCP. (We’ll often use static IPs per the docs, but DHCP is still handy.)
 
 > The domain string and scope values above are exactly what the course uses. ([docs.projectsecurity.io][3])
 
