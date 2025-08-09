@@ -1,6 +1,6 @@
 # 🛡️ Automated Windows Compliance Checker
 
-This is a simple Python-based tool to help assess basic Windows system settings against common cybersecurity baselines like **NIST 800-171** and **CIS Benchmarks**.
+This is a simple yet scalable Python-based tool to help assess basic Windows system settings against common cybersecurity baselines like **NIST 800-171** and **CIS Benchmarks**.
 
 # 📘 Compliance References
 | Control Area         | Framework           |
