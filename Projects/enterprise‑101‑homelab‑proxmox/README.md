@@ -5,7 +5,7 @@ _Re‑implementing Project Security’s “From Initial Access to Breached
 
 A step-by-step build of the **Project Security: Enterprise 101 – From Initial Access to Breached** homelab using **Proxmox VE** instead of VirtualBox/VMware. You’ll stand up a small enterprise network (AD domain, Windows & Linux clients, “security” hosts, and an attacker box), make it intentionally vulnerable, then simulate an attack and observe/defend.
 
-> Original course & docs credit: ProjectSecurity.io. I followed their host plan, accounts, and sequence; this README just translates it to a Proxmox workflow. :contentReference[oaicite:0]{index=0}
+> Original course & docs credit: ProjectSecurity.io. I followed their host plan, accounts, and sequence; this README just translates it to a Proxmox workflow.
 
 
 ## Table of Contents
