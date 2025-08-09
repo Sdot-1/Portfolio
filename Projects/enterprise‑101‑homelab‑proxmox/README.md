@@ -1,18 +1,12 @@
 # Enterprise 101 Homelab on Proxmox VE  (IN PROGRESS 7/22/25)
 _Re‑implementing Project Security’s “From Initial Access to Breached” lab_
 
-Awesome — I read through the Enterprise 101 docs you linked and put together a **single, copy-pasteable** README you can drop into your GitHub. I adapted it for **Proxmox VE** instead of VirtualBox/VMware, but kept the original project’s hostnames, IPs, and flow so your write-up matches the course. (Where the plan, accounts, and steps come from the official docs, I cite them.)
-
----
-
-````markdown
 # Enterprise 101 (Project Security) — Proxmox Edition
 
 A step-by-step build of the **Project Security: Enterprise 101 – From Initial Access to Breached** homelab using **Proxmox VE** instead of VirtualBox/VMware. You’ll stand up a small enterprise network (AD domain, Windows & Linux clients, “security” hosts, and an attacker box), make it intentionally vulnerable, then simulate an attack and observe/defend.
 
 > Original course & docs credit: ProjectSecurity.io. I followed their host plan, accounts, and sequence; this README just translates it to a Proxmox workflow. :contentReference[oaicite:0]{index=0}
 
----
 
 ## Table of Contents
 
@@ -36,13 +30,12 @@ A step-by-step build of the **Project Security: Enterprise 101 – From Initial 
 - [Troubleshooting Notes (Proxmox)](#troubleshooting-notes-proxmox)
 - [Attribution](#attribution)
 
----
 
 ## What You’ll Build
 
 A contained NAT’d lab on **10.0.0.0/24** with an AD domain (`corp.project-x-dc.com`), one Windows client, a Linux desktop client, “security” hosts, a small “corporate” Ubuntu server (for lab services like MailHog), and a Kali attacker VM. The flow and exercises mirror the Enterprise 101 docs. :contentReference[oaicite:1]{index=1}
 
----
+
 
 ## Host Plan & IPs
 
