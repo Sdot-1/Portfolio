@@ -146,7 +146,7 @@ Create each VM with these **minimum specs** (from the docs). Disk bus choices be
 * **General:** Name as above.
 * **OS:** Pick the ISO.
 * **System:** Machine `q35`, BIOS `OVMF (UEFI)` is fine; disable TPM if Windows ISO hassles you and you aren’t using pre-patched ISOs.
-* **Disks:** Use **SATA** for Windows installs (to avoid VirtIO driver steps), **SCSI (VirtIO SCSI)** for Linux.
+* **Disks:** Use **SATA** for Windows installs (to avoid VirtIO driver steps optional), **SCSI (VirtIO SCSI)** for Linux.
 * **CPU/RAM:** As per table.
 * **Network:** Bridge `vmbr1`. Model `E1000e` for Windows install; VirtIO for Linux. You can switch Windows NIC to VirtIO later after adding VirtIO drivers.
 
@@ -156,41 +156,41 @@ Create each VM with these **minimum specs** (from the docs). Disk bus choices be
 
 ### 1) AD Domain Controller (Windows Server 2025)
 
-1. Install Windows Server (Desktop Experience). Set the **Administrator** password to `@Deeboodah1!` (per docs). ([docs.projectsecurity.io][3])
+1. Install Windows Server (Desktop Experience). Set the **Administrator** password to `@Deeboodah1!`
 2. **Static IP:**
 
-   * IP: `10.0.0.5`, Mask: `255.255.255.0`, GW: `10.0.0.1`. ([docs.projectsecurity.io][3])
+   * IP: `10.0.0.5`, Mask: `255.255.255.0`, GW: `10.0.0.1`. 
 3. **Add roles & promote to DC:** AD DS, DNS, DHCP, IIS/File Services. Promote as **new forest** with root domain **`corp.project-x-dc.com`** (yes, that exact string). Leave NetBIOS as `CORP`. Reboot. 
 4. **DNS forwarder:** In DNS Manager, set forwarder to `8.8.8.8` so the domain can still resolve internet names. Test with `ping google.com` and `nslookup corp.project-x-dc.com`.
 5. **DHCP scope:** Create IPv4 scope **`project-x-scope`**: `10.0.0.100`–`10.0.0.200`, mask `/24`, router **`10.0.0.1`**. Authorize DHCP. (We’ll often use static IPs per the docs, but DHCP is still handy.)
 
-> The domain string and scope values above are exactly what the course uses. ([docs.projectsecurity.io][3])
+> The domain string and scope values above are exactly what the course uses. 
 
 ---
 
 ### 2) Windows 11 Enterprise Client
 
 1. Install Windows 11 Enterprise.
-2. **Static IP (if not using DHCP):** IP `10.0.0.100`, Mask `/24`, GW `10.0.0.1`, **DNS `10.0.0.5`** (the DC). ([docs.projectsecurity.io][4])
+2. **Static IP (if not using DHCP):** IP `10.0.0.100`, Mask `/24`, GW `10.0.0.1`, **DNS `10.0.0.5`** (the DC). 
 3. **Join domain:** System → “Change workgroup name” → “Change” → **Member of: `corp.project-x-dc.com`**. Log in as `CORP\Administrator` with the `@Deeboodah1!` password when prompted. ([docs.projectsecurity.io][4])
-4. Create or verify the user `[email protected]` with password `@password123!` (per docs) and test a domain login. ([docs.projectsecurity.io][1])
+4. Create or verify the user `[email protected]` with password `@password123!` (per docs) and test a domain login. 
 5. (Optional) Install VirtIO NIC/storage drivers and switch NIC model to VirtIO in Proxmox for better performance.
 
 ---
 
 ### 3) Ubuntu Desktop (Linux Client)
 
-1. Install Ubuntu 22.04 Desktop with a local user (e.g., `janed / @password123!`). ([docs.projectsecurity.io][5])
-2. Set **static IP** to `10.0.0.101`, GW `10.0.0.1`, and **DNS `10.0.0.5`**. Snap a Proxmox snapshot. ([docs.projectsecurity.io][5])
-3. **Join to AD (Winbind path):** The docs outline both realmd/SSSD and Samba Winbind; for Server 2025, Winbind is the working route right now. Follow their steps (`smb.conf`, `nsswitch.conf`, `pam-auth-update`, `net ads join`, restart `winbind`, `wbinfo -u`). ([docs.projectsecurity.io][5])
+1. Install Ubuntu 22.04 Desktop with a local user (e.g., `janed / @password123!`). 
+2. Set **static IP** to `10.0.0.101`, GW `10.0.0.1`, and **DNS `10.0.0.5`**. Snap a Proxmox snapshot. 
+3. **Join to AD (Winbind path):** The docs outline both realmd/SSSD and Samba Winbind; for Server 2025, Winbind is the working route right now. Follow their steps (`smb.conf`, `nsswitch.conf`, `pam-auth-update`, `net ads join`, restart `winbind`, `wbinfo -u`). 
 
 ---
 
 ### 4) Corporate Server (Ubuntu Server) + MailHog
 
-1. Install **Ubuntu Server 22.04** (`project-x-corp-svr`) and set **static IP** `10.0.0.8`. Create user `project-x-admin / @password123!`. ([docs.projectsecurity.io][6])
+1. Install **Ubuntu Server 22.04** (`project-x-corp-svr`) and set **static IP** `10.0.0.8`. Create user `project-x-admin / @password123!`. 
 2. **(Optional)** Join to AD or just keep local creds for simplicity.
-3. **MailHog (fake SMTP / web UI):** follow the tool guide to install and run MailHog so you can safely capture lab emails (e.g., phishing tests) without sending externally. ([docs.projectsecurity.io][7])
+3. **MailHog (fake SMTP / web UI):** follow the tool guide to install and run MailHog so you can safely capture lab emails (e.g., phishing tests) without sending externally. 
 
 ---
 
@@ -198,21 +198,21 @@ Create each VM with these **minimum specs** (from the docs). Disk bus choices be
 
 * **`project-x-sec-work`**: lightweight “playground” workstation.
 * **`project-x-sec-box`**: Ubuntu Desktop used for security tooling and log collection experiments.
-  Provision per the Overview’s specs; you can keep these simple at first and add tools later. ([docs.projectsecurity.io][1])
+  Provision per the Overview’s specs; you can keep these simple at first and add tools later. 
 
-> Security Onion is not required in **Enterprise 101**; it’s used in later series. If you’re curious, the doc calls that out explicitly. ([docs.projectsecurity.io][2])
+> Security Onion is not required in **Enterprise 101**; it’s used in later series. If you’re curious, the doc calls that out explicitly. 
 
 ---
 
 ### 6) Attacker (Kali)
 
-Create a Kali VM on `vmbr1` (DHCP or static in the `10.0.0.0/24` range). This VM is for reconnaissance, phishing, password attacks, and post-exploitation tasks referenced throughout the docs. ([docs.projectsecurity.io][8])
+Create a Kali VM on `vmbr1` (DHCP or static in the `10.0.0.0/24` range). This VM is for reconnaissance, phishing, password attacks, and post-exploitation tasks referenced throughout the docs. 
 
 ---
 
 ## Make It Intentionally Vulnerable
 
-The course includes a short guide where you loosen certain defaults to create realistic misconfigurations (e.g., weak policies, permissive services) that you’ll later exploit. Work through that checklist **after** the core hosts are online. ([docs.projectsecurity.io][9])
+The course includes a short guide where you loosen certain defaults to create realistic misconfigurations (e.g., weak policies, permissive services) that you’ll later exploit. Work through that checklist **after** the core hosts are online. 
 
 ---
 
@@ -226,14 +226,14 @@ If you want blue-team visibility:
 
 ## Cyber Attack Simulation
 
-Follow the doc’s end-to-end attack scenario to phish creds, gain initial access, move laterally, and grab sensitive files. This ties together the AD setup, workstation configs, and any monitoring you added. ([docs.projectsecurity.io][11])
+Follow the doc’s end-to-end attack scenario to phish creds, gain initial access, move laterally, and grab sensitive files. This ties together the AD setup, workstation configs, and any monitoring you added. 
 
 ---
 
 ## Snapshots & Tips
 
 * **Snapshot** each VM after major milestones: post-OS install, post-domain join, post-vuln-config, etc.
-* If Windows install nags about TPM/CPU: the docs explicitly allow **Windows 10** / **Server 2022** as substitutes. ([docs.projectsecurity.io][1])
+* If Windows install nags about TPM/CPU: the docs explicitly allow **Windows 10** / **Server 2022** as substitutes. 
 * For Windows on Proxmox: start with **SATA disk + E1000e NIC** to avoid VirtIO driver steps during installation; switch to VirtIO later for performance.
 
 ---
@@ -241,36 +241,9 @@ Follow the doc’s end-to-end attack scenario to phish creds, gain initial acces
 ## Troubleshooting Notes (Proxmox)
 
 * **No internet from VMs:** Re-check `vmbr1` IP (`10.0.0.1/24`), `net.ipv4.ip_forward=1`, and the MASQUERADE rule pointing to your WAN bridge (`vmbr0`).
-* **Clients can’t resolve names:** Ensure **Windows DC DNS** is set as clients’ primary DNS (`10.0.0.5`) and that the DC has a DNS forwarder (e.g., `8.8.8.8`). ([docs.projectsecurity.io][3])
-* **Linux AD join fails (SSSD):** Use the **Winbind** method — the doc notes SSSD currently doesn’t work with Server 2025. ([docs.projectsecurity.io][5])
+* **Clients can’t resolve names:** Ensure **Windows DC DNS** is set as clients’ primary DNS (`10.0.0.5`) and that the DC has a DNS forwarder (e.g., `8.8.8.8`). 
+* **Linux AD join fails (SSSD):** Use the **Winbind** method — the doc notes SSSD currently doesn’t work with Server 2025. 
 
 ---
 
-## Attribution
-
-* Enterprise 101 Overview (topology, accounts, VM specs, sequence). ([docs.projectsecurity.io][1])
-* Windows 11 client config & domain join example. ([docs.projectsecurity.io][4])
-* AD Server (Server 2025) setup, domain name, DHCP scope, DNS forwarder. ([docs.projectsecurity.io][3])
-* Ubuntu Desktop client setup and AD join (Winbind path). ([docs.projectsecurity.io][5])
-* Security Onion note (not required in E101). ([docs.projectsecurity.io][2])
-* Wazuh SIEM tool guide. ([docs.projectsecurity.io][10])
-
----
-
-```
-
-
-```
-
-[1]: https://docs.projectsecurity.io/e101/overview/ "Overview - Project Security"
-[2]: https://docs.projectsecurity.io/e101/setupsecurityonion/?utm_source=chatgpt.com "Provision & Setup Security Onion"
-[3]: https://docs.projectsecurity.io/e101/buildingad/ "AD Server - Provision & Setup Windows Server 2025 - Project Security"
-[4]: https://docs.projectsecurity.io/e101/setupwindows/?utm_source=chatgpt.com "Provision & Setup Windows 11 Enterprise"
-[5]: https://docs.projectsecurity.io/e101/setupubuntudesktop/ "Provision & Setup Ubuntu Desktop 22.04 - Project Security"
-[6]: https://docs.projectsecurity.io/e101/setupcorporateserver/?utm_source=chatgpt.com "Corporate Server - Provision & Setup Ubuntu Desktop 22.04"
-[7]: https://docs.projectsecurity.io/e101/toolguide/setupmailhog/?utm_source=chatgpt.com "Email Server - MailHog"
-[8]: https://docs.projectsecurity.io/e101/setupattacker/?utm_source=chatgpt.com "Setup The Attacker Machine"
-[9]: https://docs.projectsecurity.io/e101/configurevulnenv/?utm_source=chatgpt.com "Configure a Vulnerable Environment - ProjectSecurity.io"
-[10]: https://docs.projectsecurity.io/e101/toolguide/setupwazuh/ "SIEM - Setup Wazuh - Project Security"
-[11]: https://docs.projectsecurity.io/e101/cyberattacksimulation/?utm_source=chatgpt.com "Cyber Attack Simulation"
 
